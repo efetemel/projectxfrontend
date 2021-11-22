@@ -11,10 +11,12 @@ export default function (){
         name:Yup.string().required("Ürün adı giriniz!"),
         price:Yup.number().min(1).required("Ürün satış fiyatı giriniz"),
         purchasePrice:Yup.number().min(1).required("Ürün alış fiyatı giriniz"),
-        quantity:Yup.number().min(1).required("Ürün stok adedi giriniz"),
+        quantity:Yup.number().integer().min(1).required("Ürün stok adedi giriniz"),
         dividend:Yup.number().min(0).required("Ürün kar payı giriniz"),
-        barcode:Yup.number().positive("Lütfen geçerli barkod giriniz").required("Ürün barkodu giriniz"),
-        description:Yup.string().required("Ürün açıklaması giriniz")
+        barcode:Yup.string().min(13,"Geçerli bir barkod giriniz").max(18,"Geçerli bir barkod giriniz").required("Ürün barkodu giriniz"),
+        description:Yup.string().required("Ürün açıklaması giriniz"),
+        categoryName:Yup.string().required("Ürün kategorisi giriniz")
+
     })
 
     const initialValues = {
@@ -24,31 +26,28 @@ export default function (){
         quantity:1,
         dividend:0,
         barcode:"",
-        description:""
+        description:"",
+        categoryName:""
     }
 
-    const HandleAddProduct = (values) => {
+    const categories = [
+        {
+            name:"Anakart"
+        },
+        {
+            name:"Telefon"
+        }
+    ]
 
-        const authRequest = AuthenticationRequest;
+    const HandleAddProduct = (values) => {
+        console.log(values)
+        /*const authRequest = AuthenticationRequest;
         authRequest.email = values.email;
         authRequest.password = values.password;
 
         //Redux//
         Store.dispatch(loginUser(authRequest))
-        Store.dispatch(loadUser())
-    }
-
-
-    function CheckBarcode(value){
-        if(value.toString().length >= 13){
-            console.log(value,value.toString().length >= 13)
-            return "Barkod kontrol ediliyor"
-        }
-        else{
-            console.log(value,value.toString().length >= 13)
-
-            return "Lütfen geçerli bir barkod giriniz.."
-        }
+        Store.dispatch(loadUser())*/
     }
 
     return(
@@ -57,7 +56,7 @@ export default function (){
                 <Form>
                     <div className=" mb-4">
                         <div className="form-group first rounded-3 bg-white border">
-                            <Field type="number" className="form-control" name="barcode" placeholder="Barkod" validate={CheckBarcode} ></Field>
+                            <Field type="text" className="form-control" name="barcode" placeholder="Barkod" ></Field>
                         </div>
                         <ErrorMessage name="barcode" render={(errorMessage) => <p className="mt-2 text-danger">{errorMessage}</p>}></ErrorMessage>
                     </div>
@@ -69,9 +68,13 @@ export default function (){
                     </div>
                     <div className=" mb-4">
                         <div className="form-group first rounded-3 bg-white border">
-                            <Field type="text" className="form-control" name="name" placeholder="Ürün adı" ></Field>
+                            <Field as="select" className="form-control" name="categoryName" placeholder="Ürün adı" >
+                                {categories.map((item,key) => {
+                                    return <option value={item.name} key={key}>{item.name}</option>
+                                })}
+                            </Field>
                         </div>
-                        <ErrorMessage name="name" render={(errorMessage) => <p className="mt-2 text-danger">{errorMessage}</p>}></ErrorMessage>
+                        <ErrorMessage name="categoryName" render={(errorMessage) => <p className="mt-2 text-danger">{errorMessage}</p>}></ErrorMessage>
                     </div>
                     <div>
                         <button type="submit" color="info">Ürünü ekle</button>
