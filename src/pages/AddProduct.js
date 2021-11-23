@@ -1,5 +1,4 @@
 import * as Yup from "yup";
-import { ErrorMessage, Field, Form, Formik } from "formik";
 import  { AuthenticationRequest } from "../dto/AuthenticationRequest";
 import Store from "../redux/Store";
 import { loadUser, loginUser } from "../redux/actions/AuthActions";
@@ -7,17 +6,7 @@ import { useState } from "react";
 
 export default function (){
 
-    const schema = Yup.object().shape({
-        name:Yup.string().required("Ürün adı giriniz!"),
-        price:Yup.number().min(1).required("Ürün satış fiyatı giriniz"),
-        purchasePrice:Yup.number().min(1).required("Ürün alış fiyatı giriniz"),
-        quantity:Yup.number().integer().min(1).required("Ürün stok adedi giriniz"),
-        dividend:Yup.number().min(0).required("Ürün kar payı giriniz"),
-        barcode:Yup.string().min(13,"Geçerli bir barkod giriniz").max(18,"Geçerli bir barkod giriniz").required("Ürün barkodu giriniz"),
-        description:Yup.string().required("Ürün açıklaması giriniz"),
-        categoryName:Yup.string().required("Ürün kategorisi giriniz")
-
-    })
+    
 
     const initialValues = {
         name:"",
@@ -29,6 +18,15 @@ export default function (){
         description:"",
         categoryName:""
     }
+
+    const [name,setName] = useState("");
+    const [price,setPrice] = useState(1);
+    const [purchasePrice,setPurchasePrice] = useState(1);
+    const [quantity,setQuantity] = useState(1);
+    const [dividend,setDividend] = useState(0);
+    const [barcode,setBarcode] = useState("");
+    const [description,setDescription] = useState("");
+    const [category,setCategory] = useState("");
 
     const categories = [
         {
@@ -50,37 +48,14 @@ export default function (){
         Store.dispatch(loadUser())*/
     }
 
+    
+
     return(
         <div>
-            <Formik initialValues={initialValues} validationSchema={schema} onSubmit={(values) => HandleAddProduct(values)}>
-                <Form>
-                    <div className=" mb-4">
-                        <div className="form-group first rounded-3 bg-white border">
-                            <Field type="text" className="form-control" name="barcode" placeholder="Barkod" ></Field>
-                        </div>
-                        <ErrorMessage name="barcode" render={(errorMessage) => <p className="mt-2 text-danger">{errorMessage}</p>}></ErrorMessage>
-                    </div>
-                    <div className=" mb-4">
-                        <div className="form-group first rounded-3 bg-white border">
-                            <Field type="text" className="form-control" name="name" placeholder="Ürün adı" ></Field>
-                        </div>
-                        <ErrorMessage name="name" render={(errorMessage) => <p className="mt-2 text-danger">{errorMessage}</p>}></ErrorMessage>
-                    </div>
-                    <div className=" mb-4">
-                        <div className="form-group first rounded-3 bg-white border">
-                            <Field as="select" className="form-control" name="categoryName" placeholder="Ürün adı" >
-                                {categories.map((item,key) => {
-                                    return <option value={item.name} key={key}>{item.name}</option>
-                                })}
-                            </Field>
-                        </div>
-                        <ErrorMessage name="categoryName" render={(errorMessage) => <p className="mt-2 text-danger">{errorMessage}</p>}></ErrorMessage>
-                    </div>
-                    <div>
-                        <button type="submit" color="info">Ürünü ekle</button>
-                    </div>
-                </Form>
-            </Formik>
+            <div>
+                <label htmlFor="">Ürün barkodu</label>
+                <input type="number" min="1" value={barcode} onChange={(e) => {setBarcode(e.target.value)}}/>
+            </div>
         </div>
     )
 }
