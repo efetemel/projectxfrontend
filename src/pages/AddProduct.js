@@ -6,6 +6,8 @@ import { useState } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { Link } from "react-router-dom";
 import {AddProductRequest} from "../dto/AddProductRequest";
+import axios from "axios";
+import { API_ADD_PRODUCT } from "../settings/ApiSettings";
 
 export default function (){
 
@@ -43,19 +45,9 @@ export default function (){
     const [purchasePrice,setPurchasePrice] = useState(0);
 
 
-    function CheckBarcode(value){
-        if(value.toString().length >= 13){
-            return "Barkod kontrol ediliyor"
-        }
-        else{
-
-            return "Lütfen geçerli bir barkod giriniz.."
-        }
-    }
-
     function test(){
-        if (purchasePrice != null && purchasePrice != ""){
-            return parseFloat(dividend)/parseFloat(purchasePrice)*100;
+        if (purchasePrice != null && purchasePrice != "" && dividend !="" && dividend != null){
+            return Math.round(parseFloat(dividend)/parseFloat(purchasePrice)*100);
         }
         else{
             return 0
@@ -76,17 +68,21 @@ export default function (){
         const addRequest = AddProductRequest;
 
         addRequest.name = values.name;
-        addRequest.barcode = values.barcode;
-        addRequest.dividend = values.dividend;
-        addRequest.purchasePrice = values.purchasePrice;
+        addRequest.barcode = values.barcode.toString();
+        addRequest.dividend = dividend;
+        addRequest.purchasePrice = purchasePrice;
         addRequest.categoryName = values.categoryName;
         addRequest.description = values.description;
         addRequest.quantity = values.quantity;
         addRequest.price = calcPrice();
 
-        //Redux//
-       /* Store.dispatch(loginUser(authRequest))
-        Store.dispatch(loadUser())*/
+        axios.post(API_ADD_PRODUCT,addRequest)
+            .then((res) => {
+                console.log(res.data)
+            })
+            .err((res) => {
+                console.log(res.message)
+            })
     }
 
     return(
@@ -96,7 +92,7 @@ export default function (){
                     <div className=" mb-4">
                         <div className="form-group first rounded-3 bg-white border">
                             <label htmlFor="">Ürün barkodu </label>
-                            <Field type="number" className="form-control" name="barcode" placeholder="Barkod" validate={CheckBarcode} ></Field>
+                            <Field type="number" className="form-control" name="barcode" placeholder="Barkod" ></Field>
                         </div>
                         <ErrorMessage name="barcode" render={(errorMessage) => <p className="mt-2 text-danger">{errorMessage}</p>}></ErrorMessage>
                     </div>
