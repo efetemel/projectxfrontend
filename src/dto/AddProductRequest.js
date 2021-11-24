@@ -4,7 +4,7 @@ export const AddProductRequest = {
     "purchasePrice": 0,
     "quantity": 0,
     "dividend": 0,
-    "categoryName": "",
+    "category": "",
     "barcode": "",
     "description": ""
 }
