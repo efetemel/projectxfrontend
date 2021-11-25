@@ -19,7 +19,7 @@ export default function (){
             <p>Toplam gider : {expense}</p><br/>
 
             <Link to="/add-product">Ürün ekle</Link><br/><br/>
-            <Link to="/update-product">Ürün stoğu ekle</Link><br/><br/>
+            <Link to="/add-stock-product">Ürün stoğu ekle</Link><br/><br/>
             <Link to="/dell-product">Ürün sil</Link><br/><br/>
             <Link to="/add-product">Stoktaki ürünleri getir</Link><br/><br/><br/>
 

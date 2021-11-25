@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { getExpense, getInCome, getNowVault, getReceived } from "./redux/actions/VaultActions";
 import Logout from "./pages/Logout";
 import AddProduct from "./pages/AddProduct";
+import AddStockProduct from "./pages/AddStockProduct";
 
 export default function App() {
 
@@ -40,6 +41,8 @@ export default function App() {
             return <>
                 <Route exact path="/" element={<Home/>}/>
                 <Route exact path="/add-product" element={<AddProduct/>}/>
+                <Route exact path="/add-stock-product" element={<AddStockProduct/>}/>
+
             </>
         }
         else {
