@@ -3,71 +3,35 @@ import axios from "axios";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { AddProductRequest } from "../dto/AddProductRequest";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   API_ADD_PRODUCT,
+  API_DELL_PRODUCT,
   API_GET_CATEGORIES,
   API_GET_PRODUCT,
 } from "../settings/ApiSettings";
 
 export default function () {
   const [status, setStatus] = useState("");
-  let { paramBarcode } = useParams();
 
-  const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState([]);
-  const history = useNavigate();
-
-  if (loading == true) {
-      
-    axios.get(API_GET_CATEGORIES).then((res) => {
-      setCategories(res.data);
-      axios.get(API_GET_PRODUCT + paramBarcode)
-      .then((res1) => {
-        setLoading(false)
-        setProduct(res1.data);
-        setName(res1.data.name);
-        setDescription(res1.data.description);
-        setCategory(res.data[0].name);
-        setPurchasePrice(res1.data.purchasePrice);
-        setDividend(res1.data.dividend);
-
-      })
-      .catch((err) => {
-        history("/");
-      });
-    });
-    
-  }
 
   const [name, setName] = useState("");
   const [barcode, setBarcode] = useState("");
   const [dividend, setDividend] = useState("");
   const [purchasePrice, setPurchasePrice] = useState("");
-  const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState("");
 
-  const HandleAddProduct = (values) => {
+  const HandleDellProduct = (values) => {
     setStatus("");
-    const addRequest = AddProductRequest;
 
-    addRequest.name = name;
-    addRequest.barcode = product.barcode.toString();
-    addRequest.dividend = parseFloat(dividend);
-    addRequest.purchasePrice = parseFloat(purchasePrice);
-    addRequest.category = category;
-    addRequest.description = description;
-    addRequest.quantity = quantity;
-    addRequest.price = priceCalc();
-    setStatus("Ürün ekleniyor lütfen bekleyiniz!");
+    setStatus("Ürün siliniyor lütfen bekleyiniz!");
 
-    axios.post(API_ADD_PRODUCT, addRequest)
+    axios.get(API_DELL_PRODUCT + barcode)
       .then((res) => {
           setProduct(res.data)
-        setStatus("Ürün başarıyla eklendi!");
+        setStatus("Ürün başarıyla silindi!");
       })
       .catch((res) => {
         setStatus(res.message);
@@ -100,9 +64,22 @@ export default function () {
     }
   }
 
-  function addProduct() {
-    dividendCalc();
-    priceCalc();
+  if(barcode != null && barcode.toString().length >= 13 &&  barcode.toString().length <= 20){
+      if(product == null || product.barcode != barcode){
+        axios.get(API_GET_PRODUCT+barcode)
+        .then((res) => {
+            setProduct(res.data);
+            setName(res.data.name);
+            setDescription(res.data.description);
+            setQuantity(res.data.quantity);
+            setPurchasePrice(res.data.purchasePrice);
+            setDividend(res.data.dividend);
+
+        })
+        .catch((err) => {
+            
+        })
+      }    
   }
 
   return (
@@ -113,10 +90,11 @@ export default function () {
         <input
           type="text"
           placeholder="Ürün barkodu"
-          value={product.barcode}
-          disabled
+          value={barcode}
+          onChange={(e) => {setBarcode(e.target.value)}}
         />
       </div>
+      <br />
       <div>
         <label htmlFor="">Ürün adı</label>
         <input type="text"  value={name} disabled  onChange={(e) => {setName(e.target.value)}} />
@@ -126,20 +104,8 @@ export default function () {
         <input type="text" value={description} disabled onChange={(e) => {setDescription(e.target.value)}} />
       </div>
       <div>
-        <label htmlFor="">Ürün kategorisi</label>
-        <select disabled values={category} onChange={(e) => {setCategory(e.target.value)}}>
-          {categories.map((item, key) => {
-            return (
-              <option value={item.name} key={key}>
-                {item.name}
-              </option>
-            );
-          })}
-        </select>
-      </div>
-      <div>
         <label htmlFor="">Ürün adedi</label>
-        <input type="number" value={quantity} onChange={(e) => {setQuantity(e.target.value)}} />
+        <input type="number" value={quantity} disabled onChange={(e) => {setQuantity(e.target.value)}} />
       </div>
       <div>
         <label htmlFor="">Ürün geliş fiyatı</label> 
@@ -155,7 +121,7 @@ export default function () {
       <p>
         Ürün satış fiyatı <span>{priceCalc()}</span>
       </p>
-      <input type="submit" value="Ürün ekle" onClick={()=> {HandleAddProduct()}} />
+      <input type="submit" value="Ürünü sil" onClick={()=> {HandleDellProduct()}} />
     </div>
   );
 }

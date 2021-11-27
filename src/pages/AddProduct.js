@@ -7,10 +7,10 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { Link } from "react-router-dom";
 import {AddProductRequest} from "../dto/AddProductRequest";
 import axios from "axios";
-import {API_ADD_PRODUCT, API_GET_CATEGORIES} from "../settings/ApiSettings";
+import {API_ADD_PRODUCT, API_GET_CATEGORIES, API_GET_PRODUCT, API_UPDATE_PRODUCT} from "../settings/ApiSettings";
 import {useForm} from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import {Navigate,useNavigate} from "react-router-dom";
 export default function (){
 
 
@@ -21,6 +21,7 @@ export default function (){
         axios.get(API_GET_CATEGORIES)
             .then((res) => {
                 setCategories(res.data)
+
                 setLoading(false)
             })
     }
@@ -38,34 +39,73 @@ export default function (){
 
     })
 
-    const { register, handleSubmit,watch, formState:{ errors } } = useForm({
+    const { register, handleSubmit,watch,resetField, formState:{ errors } } = useForm({
         resolver: yupResolver(schema)
     });
     const onSubmit = data => HandleAddProduct(data);
     const [status,setStatus] = useState("");
+    const [quested,setQuested] = useState(false);
+
+    const history = useNavigate();
 
 
     const HandleAddProduct = (values) => {
         setStatus("");
         const addRequest = AddProductRequest;
 
-        addRequest.name = values.name;
-        addRequest.barcode = values.barcode.toString();
-        addRequest.dividend = parseFloat(values.dividend);
-        addRequest.purchasePrice = parseFloat(values.purchasePrice);
-        addRequest.category = values.category;
-        addRequest.description = values.description;
-        addRequest.quantity = values.quantity;
-        addRequest.price = priceCalc();
-        setStatus("Ürün ekleniyor lütfen bekleyiniz!");
+        axios.get(API_GET_PRODUCT + values.barcode)
+        .then((res) => {
+            console.log(res.data.name,values.name)
+            var confirm = window.confirm("Bu ürünü zaten daha önce eklemiştiniz eğer stok eklemek isterseniz tamam a tıklayın.");
+            if(confirm){
+                history("/add-stock-product/"+ values.barcode);
+            }
+            else{
+                var confirm1 = window.confirm("Bu ürün zaten kaydedilmiş. Eğer devam etmek isterseniz ürün bilgileri girdiğiniz bilgiler ile güncellenecektir. Devam etmek istiyor musunuz?");
+                if(confirm1){
+                    addRequest.name = values.name;
+                    addRequest.barcode = values.barcode.toString();
+                    addRequest.dividend = parseFloat(values.dividend);
+                    addRequest.purchasePrice = parseFloat(values.purchasePrice);
+                    addRequest.category = values.category;
+                    addRequest.description = values.description;
+                    addRequest.price = priceCalc();
+                    setStatus("Ürün güncelleniyor lütfen bekleyiniz!");
+                    axios.post(API_UPDATE_PRODUCT,addRequest)
+                    .then((res) => {
+                        setStatus("Ürün başarıyla güncellendi!");
+                        resetField();
+                        setQuested(false)
+                    })
+                    .catch((res) => {
+                        setStatus(res.message);
+                    })
+                }
+            }
+        })
+        .catch((res) => {
+            addRequest.name = values.name;
+            addRequest.barcode = values.barcode.toString();
+            addRequest.dividend = parseFloat(values.dividend);
+            addRequest.purchasePrice = parseFloat(values.purchasePrice);
+            addRequest.category = values.category;
+            addRequest.description = values.description;
+            addRequest.quantity = values.quantity;
+            addRequest.price = priceCalc();
+            setStatus("Ürün ekleniyor lütfen bekleyiniz!");
+    
+            axios.post(API_ADD_PRODUCT,addRequest)
+                .then((res) => {
+                    setStatus("Ürün başarıyla eklendi!");
+                    resetField();
 
-        axios.post(API_ADD_PRODUCT,addRequest)
-            .then((res) => {
-                setStatus("Ürün başarıyla eklendi!");
-            })
-            .catch((res) => {
-                setStatus(res.message);
-            })
+                    setQuested(false)
+                })
+                .catch((res) => {
+                    setStatus(res.message);
+                })
+        })
+        
     }
 
 
@@ -85,6 +125,7 @@ export default function (){
             return 0;
         }
     }
+    
 
     function priceCalc(){
         var purchasePrice = watch("purchasePrice");
@@ -103,15 +144,28 @@ export default function (){
         }
     }
 
-
+    function checkBarcode(){
+        var barcode = watch("barcode");
+        if(barcode != null &&barcode.toString().length >= 13 && barcode.toString().length <= 20 && status == "" && quested == false){
+            axios.get(API_GET_PRODUCT + barcode)
+            .then((res) => {
+                var confirm = window.confirm("Bu ürünü zaten daha önce eklemiştiniz eğer stok eklemek isterseniz tamam a tıklayın.");
+                setQuested(true)
+                if(confirm){
+                    history("/add-stock-product/"+ barcode);
+                }
+            })
+        }
+    }
 
     return(
         <div>
+            {checkBarcode()}
             <p>{status}</p>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
                     <label htmlFor="">Ürün barkodu</label>
-                    <input type="number" defaultValue="0"  {...register("barcode")} />
+                    <input type="number"   {...register("barcode")} />
                     <label>{errors.barcode?.message}</label>
                 </div>
                 <div>

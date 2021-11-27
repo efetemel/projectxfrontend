@@ -9,6 +9,9 @@ import { getExpense, getInCome, getNowVault, getReceived } from "./redux/actions
 import Logout from "./pages/Logout";
 import AddProduct from "./pages/AddProduct";
 import AddStockProduct from "./pages/AddStockProduct";
+import StockOfProduct from "./pages/StockOfProduct";
+import DellProduct from "./pages/DellProduct";
+import SellProduct from "./pages/SellProduct";
 
 export default function App() {
 
@@ -41,7 +44,10 @@ export default function App() {
             return <>
                 <Route exact path="/" element={<Home/>}/>
                 <Route exact path="/add-product" element={<AddProduct/>}/>
-                <Route exact path="/add-stock-product" element={<AddStockProduct/>}/>
+                <Route exact path="/add-stock-product/:paramBarcode" element={<AddStockProduct/>}/>
+                <Route exact path="/stock-of-product" element={<StockOfProduct/>}/>
+                <Route exact path="/dell-product" element={<DellProduct/>}/>
+                <Route exact path="/sell-product" element={<SellProduct/>}/>
 
             </>
         }
