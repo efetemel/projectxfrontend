@@ -128,6 +128,7 @@ export default function () {
       <div>
         <label htmlFor="">Ürün kategorisi</label>
         <select disabled values={category} onChange={(e) => {setCategory(e.target.value)}}>
+        <option value="" disabled selected>Kategori Seçiniz</option>
           {categories.map((item, key) => {
             return (
               <option value={item.name} key={key}>

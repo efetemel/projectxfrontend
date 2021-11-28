@@ -2,23 +2,28 @@ import { useState } from "react"
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { API_GET_ALL_CUSTOMER } from "../settings/ApiSettings";
+import {API_ADD_PRODUCT,API_GET_ALL_CUSTOMER, API_GET_CATEGORIES, API_GET_PRODUCT, API_UPDATE_PRODUCT} from "../settings/ApiSettings";
+
 import axios from "axios";
 
 export default function(){
 
     const [cart,setCart] = useState([]);
+    const [totalPrice,setTotalPrice] = useState(0);
+
     const [customers,setCustomers] = useState();
     const [selectedCustomer,setSelectedCustomer] = useState();
+    const [status,setStatus] = useState("");
 
     const [barcode,setBarcode] = useState();
     const [name,setName] = useState();
     const [description,setDescription] = useState();
-    const [category,setCategory] = useState();
     const [purchasePrice,setPurchasePrice] = useState();
     const [dividend,setDividend] = useState();
     const [customerType,setCustomerType] = useState("Genel Müşteri");
-    const [orderType,setOrderType] = useState();
+    const [orderType,setOrderType] = useState("Nakit");
+    const [quantity,setQuantity] = useState(1);
+    const [product,setProduct] = useState();
 
     const [loading,setLoading] = useState(true);
 
@@ -34,9 +39,7 @@ export default function(){
         return <p>Lütfen Bekleyiniz</p>
     }
 
-    function HandleSellProduct(values){
-
-    }
+    
 
     function dividendCalc(){
         if ( purchasePrice != null && purchasePrice >= 1){
@@ -57,10 +60,10 @@ export default function(){
 
         if ( purchasePrice != null &&purchasePrice >= 1){
             if (dividend != null && dividend >=1){
-                return parseFloat(purchasePrice) + parseFloat(dividend);
+                return (parseFloat(purchasePrice) + parseFloat(dividend)) * parseInt(quantity);
             }
             else{
-                return parseFloat(purchasePrice);
+                return parseFloat(purchasePrice) * parseInt(quantity);
             }
         }
         else{
@@ -98,7 +101,88 @@ export default function(){
         }
     }
 
+
+    function checkBarcode(){
+        if(barcode != null &&barcode.toString().length >= 13 && barcode.toString().length <= 20 && status == "" && (product == null||product.barcode != barcode )){
+            axios.get(API_GET_PRODUCT + barcode)
+            .then((res) => {
+                setProduct(res.data)
+                setName(res.data.name)
+                setDescription(res.data.description)
+                setPurchasePrice(res.data.purchasePrice);
+                setDividend(res.data.dividend)
+            })
+            .catch((err) => {
+
+            })
+        }
+    }
+
+    function HandleSellProduct(values){
+
+    }
+
+    function addCartItem(){
+        if(product != null){
+            const item = {
+                barcode:product.barcode,
+                name:product.name,
+                quantity:parseInt(quantity),
+                price:parseFloat(priceCalc()),
+                unitPrice:parseFloat(purchasePrice) + parseFloat(dividend)
+            }
+            if(cart.length >= 0){
+                var checkCart = cart.findIndex(c=>c.name == item.name);
+                if(checkCart >= 0){
+                    cart[checkCart].quantity = parseInt(cart[checkCart].quantity) + parseInt(quantity);
+                    cart[checkCart].price = parseFloat(cart[checkCart].price)+parseFloat( priceCalc());
+                }
+                else{
+                    setCart([...cart,item])
+
+                }
+                
+                const oldTotal = totalPrice;
+                setTotalPrice(parseFloat(oldTotal)+parseFloat(item.price));
+            }
+            else{
+                setCart([item])
+                setTotalPrice(priceCalc());
+
+            }
+
+        }
+        
+    }
+
+    function dellCartItem(key){
+        if(product != null &&  cart != null){
+            if(cart[key].quantity > 0){
+              const newCart = []
+              cart.forEach((item) => {
+                if(item.quantity > 1){
+                    item.quantity -= 1;
+                    item.price -= item.unitPrice;
+                    newCart.push(item)
+                    const oldTotal = totalPrice;
+                    setTotalPrice(parseFloat(oldTotal)-parseFloat(item.unitPrice));
+                }
+              })
+              setCart(newCart)  
+            }
+            else if(cart.length > 1){
+               
+            }
+        }
+    }
+
+    function fastSaling(){
+        
+    }
+
     return <div>
+        {status}
+        {checkBarcode()}
         <div>
             <label htmlFor="">Ürün barkodu</label>
             <input type="number" value={barcode} onChange={(e) => {setBarcode(e.target.value)}}  />
@@ -110,11 +194,6 @@ export default function(){
         <div>
             <label htmlFor="">Ürün açıklaması</label>
             <input type="text" value={description} disabled onChange={(e) => {setDescription(e.target.name)}} disabled />
-        </div>
-        <div>
-            <label htmlFor="">Ürün kategorisi</label>
-            <select value={category} disabled onChange={(e) => {setCategory(e.target.value)}}> 
-            </select>
         </div>
         <div>
             <label htmlFor="">Müşteri tipi</label>
@@ -129,6 +208,10 @@ export default function(){
             {checkCustomerOrOrderType()}
         </div>
         <div>
+            <label htmlFor="">Ürün adedi</label>
+            <input type="number" value={quantity} min="1"  onChange={(e) => {setQuantity(e.target.value)}}/> 
+        </div>
+        <div>
             <label htmlFor="">Ürün geliş fiyatı</label>
             <input value={purchasePrice}  onChange={(e) => {setPurchasePrice(e.target.value)}}/> 
         </div>
@@ -138,5 +221,37 @@ export default function(){
         </div>
         <p>Ürün kar payı % <span>{dividendCalc()}</span></p>
         <p>Ürün satış fiyatı <span>{priceCalc()}</span></p>
+        <button onClick={() => {fastSaling()}}>Ürünü direk sat</button><br />
+        <button onClick={() => {addCartItem()}}>Sepete Ekle</button><br />
+        <button>Sepete Temizle</button><br /><br />
+
+        <span>Sepet</span>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Ürün Barkodu</th>
+                    <th>Ürün Adı</th>
+                    <th>Ürün Adedi</th>
+                    <th>Ürün Fiyatı</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    cart.map((item,key) => {
+                        return <tr key={key}>
+                            <td>{item.barcode}</td>
+                            <td>{item.name}</td>
+                            <td>{item.quantity}</td>
+                            <td>{item.price}</td>
+                            <td><button onClick={() => {dellCartItem(key)}}>Sil</button></td>
+                        </tr>
+                    })
+                }
+            </tbody>
+        </table><br />
+        <p>Sepet Toplam Tutar {totalPrice}</p>
+        <button>Sepetteki ürünleri sat</button>
+
     </div>
 }

@@ -154,6 +154,8 @@ export default function (){
                 if(confirm){
                     history("/add-stock-product/"+ barcode);
                 }
+            }).catch((err) => {
+                
             })
         }
     }
@@ -181,6 +183,7 @@ export default function (){
                 <div>
                     <label htmlFor="">Ürün kategorisi</label>
                     <select {...register("category")}>
+                        <option value="" disabled selected>Kategori Seçiniz</option>
                         {
                             categories.map((item,key) => {
                                 return <option value={item.name} key={key}>{item.name}</option>
