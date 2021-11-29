@@ -6,6 +6,7 @@ export const VAULT_PREFIX = API_URL + "Vault/";
 export const PRODUCT_PREFIX = API_URL + "Product/";
 export const CATEGORY_PREFIX = API_URL + "Category/";
 export const CUSTOMER_PREFIX = API_URL + "Customer/";
+export const SALES_PREFIX = API_URL + "Sales/";
 
 export const AUTHENTICATE = "Authenticate";
 export const GET_USER_INFO = "GetUserInfo";
@@ -21,6 +22,8 @@ export const UPDATE_PRODUCT = "UpdateProduct";
 export const DELL_PRODUCT = "DellProduct?barcode=";
 export const GET_ALL_CUSTOMER = "GetAllCustomer";
 export const GET_CUSTOMER = "GetCustomerByName";
+export const ADD_SALES = "AddSales";
+export const ADD_SALES_WITH_CUSTOMER = "AddSalesWithCustomer";
 
 export const API_LOGIN = AUTHENTICATION_PREFIX + AUTHENTICATE;
 export const API_GET_USER_INFO = USER_PREFIX + GET_USER_INFO;
@@ -35,3 +38,5 @@ export const API_GET_PRODUCT = PRODUCT_PREFIX + GET_PRODUCT;
 export const API_UPDATE_PRODUCT = PRODUCT_PREFIX + UPDATE_PRODUCT;
 export const API_DELL_PRODUCT = PRODUCT_PREFIX + DELL_PRODUCT;
 export const API_GET_ALL_CUSTOMER = CUSTOMER_PREFIX + GET_ALL_CUSTOMER;
+export const API_ADD_SALES = SALES_PREFIX + ADD_SALES;
+export const API_ADD_SALES_WITH_CUSTOMER = SALES_PREFIX + ADD_SALES_WITH_CUSTOMER;

@@ -2,7 +2,7 @@ import { useState } from "react"
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import {API_ADD_PRODUCT,API_GET_ALL_CUSTOMER, API_GET_CATEGORIES, API_GET_PRODUCT, API_UPDATE_PRODUCT} from "../settings/ApiSettings";
+import {API_ADD_PRODUCT,API_ADD_SALES,API_GET_ALL_CUSTOMER, API_GET_CATEGORIES, API_GET_PRODUCT, API_UPDATE_PRODUCT} from "../settings/ApiSettings";
 
 import axios from "axios";
 
@@ -97,6 +97,21 @@ export default function(){
                         })
                     }
                 </select>
+                <div>
+                <label htmlFor="">Ödeme Tipi</label>
+                <span>
+                    <input type="radio" value="Nakit" checked={orderType === "Nakit"} onChange={(e) => {setOrderType(e.target.value)}} />
+                    <label htmlFor="">Nakit</label>
+                </span>
+                <span>
+                    <input type="radio" value="Pos" checked={orderType === "Pos"} onChange={(e) => {setOrderType(e.target.value)}} />
+                    <label htmlFor="">Pos</label>
+                </span>
+                <span>
+                    <input type="radio" value="Veresiye" checked={orderType === "Veresiye"} onChange={(e) => {setOrderType(e.target.value)}} />
+                    <label htmlFor="">Veresiye</label>
+                </span>
+            </div>
             </div>
         }
     }
@@ -182,10 +197,113 @@ export default function(){
         }
     }
 
-    function fastSaling(){
-        
+    function clearCart(){
+        setCart([]);
+        setTotalPrice(0);
     }
-    console.log(cart.length)
+
+    function isFastSailing(){
+        if(cart.length <= 0){
+            return <button onClick={() => {fastSaling()}}>Ürünü direk sat</button>
+        }else{
+            return <>
+                <span>Sepet</span>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Ürün Barkodu</th>
+                            <th>Ürün Adı</th>
+                            <th>Ürün Adedi</th>
+                            <th>Ürün Fiyatı</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            cart.map((item,key) => {
+                                return <tr key={key}>
+                                    <td>{item.barcode}</td>
+                                    <td>{item.name}</td>
+                                    <td>{item.quantity}</td>
+                                    <td>{item.price}</td>
+                                    <td><button onClick={() => {dellCartItem(key)}}>Sil</button></td>
+                                </tr>
+                            })
+                        }
+                    </tbody>
+                </table><br />
+                <p>Sepet Toplam Tutar {totalPrice}</p>
+                <button onClick={() => {clearCart()}}>Sepete Temizle</button><br /><br />
+                <button>Sepetteki ürünleri sat</button></>
+        }
+    }
+
+    function isVeresiye(){
+
+    }
+
+    function fastSaling(){
+        if(product != null && barcode != null){
+            //customer type
+            if(customerType === "Genel Müşteri"){
+                //order type
+                const sale = {
+                    barcode : barcode,
+                    price:priceCalc(),
+                    quantity:quantity,
+                    description:"",
+                    paymentTypeName:orderType
+                }
+                setStatus("Ürün satılıyor");
+                axios.post(API_ADD_SALES,sale)
+                    .then((res) => {
+                        setStatus("Ürün Satıldı!");
+                        setProduct()
+                        setName()
+                        setDescription()
+                        setPurchasePrice();
+                        setDividend()
+                        setBarcode(0)
+                    })
+                    .catch((err) => {
+                        setStatus("Ürün satılamadı => "+err.message)
+                    })
+            }
+            else if(customerType === "Özel Müşteri"){
+                 //order type
+                if(orderType === "Veresiye"){
+                    
+                }
+                else{
+                    //backend de özel müşteriye nakit pos eklenecek
+                    //şuan sadece veresiye var özel müşteride
+                    const sale = {
+                        barcode : barcode,
+                        price:priceCalc(),
+                        quantity:quantity,
+                        description:"",
+                        paymentTypeName:orderType
+                    }
+                    setStatus("Ürün satılıyor");
+                    axios.post(API_ADD_SALES,sale)
+                        .then((res) => {
+                            setStatus("Ürün Satıldı!");
+                            setProduct()
+                            setName()
+                            setDescription()
+                            setPurchasePrice();
+                            setDividend()
+                            setBarcode(0)
+                        })
+                        .catch((err) => {
+                            setStatus("Ürün satılamadı => "+err.message)
+                        })
+                }
+            }
+        }
+
+    }
+
     return <div>
         {status}
         {checkBarcode()}
@@ -227,37 +345,9 @@ export default function(){
         </div>
         <p>Ürün kar payı % <span>{dividendCalc()}</span></p>
         <p>Ürün satış fiyatı <span>{priceCalc()}</span></p>
-        { cart.length >= 0 ? <button onClick={() => {fastSaling()}}>Ürünü direk sat</button> : <></>}
         <button onClick={() => {addCartItem()}}>Sepete Ekle</button><br />
-        <button>Sepete Temizle</button><br /><br />
-
-        <span>Sepet</span>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Ürün Barkodu</th>
-                    <th>Ürün Adı</th>
-                    <th>Ürün Adedi</th>
-                    <th>Ürün Fiyatı</th>
-                    <th>İşlemler</th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    cart.map((item,key) => {
-                        return <tr key={key}>
-                            <td>{item.barcode}</td>
-                            <td>{item.name}</td>
-                            <td>{item.quantity}</td>
-                            <td>{item.price}</td>
-                            <td><button onClick={() => {dellCartItem(key)}}>Sil</button></td>
-                        </tr>
-                    })
-                }
-            </tbody>
-        </table><br />
-        <p>Sepet Toplam Tutar {totalPrice}</p>
-        <button>Sepetteki ürünleri sat</button>
+        {isFastSailing()}<br/>
+        
 
     </div>
 }
