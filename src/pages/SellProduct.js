@@ -113,7 +113,12 @@ export default function(){
                 setDividend(res.data.dividend)
             })
             .catch((err) => {
-
+                setProduct()
+                setName()
+                setDescription()
+                setPurchasePrice();
+                setDividend()
+                setBarcode(0)
             })
         }
     }
@@ -154,32 +159,33 @@ export default function(){
         }
         
     }
-
     function dellCartItem(key){
         if(product != null &&  cart != null){
-            if(cart[key].quantity > 0){
-              const newCart = []
-              cart.forEach((item) => {
-                if(item.quantity > 1){
-                    item.quantity -= 1;
-                    item.price -= item.unitPrice;
-                    newCart.push(item)
-                    const oldTotal = totalPrice;
-                    setTotalPrice(parseFloat(oldTotal)-parseFloat(item.unitPrice));
-                }
-              })
-              setCart(newCart)  
+            if(cart[key].quantity > 1){
+              cart[key].quantity -= 1;
+              cart[key].price -= cart[key].unitPrice;
+              const oldTotal = totalPrice;
+              setTotalPrice(parseFloat(oldTotal)-parseFloat(cart[key].unitPrice));
             }
-            else if(cart.length > 1){
-               
+            else{
+               const newCart = []
+               cart.forEach((item,key1)=> {
+                   if(key1 != key){
+                       newCart.push(item)
+                   }
+               })
+               const oldTotal = totalPrice;
+               setTotalPrice(parseFloat(oldTotal)-parseFloat(cart[key].unitPrice));
+               setCart(newCart)
             }
+           
         }
     }
 
     function fastSaling(){
         
     }
-
+    console.log(cart.length)
     return <div>
         {status}
         {checkBarcode()}
@@ -221,7 +227,7 @@ export default function(){
         </div>
         <p>Ürün kar payı % <span>{dividendCalc()}</span></p>
         <p>Ürün satış fiyatı <span>{priceCalc()}</span></p>
-        <button onClick={() => {fastSaling()}}>Ürünü direk sat</button><br />
+        { cart.length >= 0 ? <button onClick={() => {fastSaling()}}>Ürünü direk sat</button> : <></>}
         <button onClick={() => {addCartItem()}}>Sepete Ekle</button><br />
         <button>Sepete Temizle</button><br /><br />
 
