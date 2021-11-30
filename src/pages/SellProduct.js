@@ -26,6 +26,7 @@ export default function(){
     const [orderType,setOrderType] = useState("Nakit");
     const [quantity,setQuantity] = useState(1);
     const [product,setProduct] = useState();
+    const [value,setValue] = useState()
 
     const [loading,setLoading] = useState(true);
 
@@ -305,10 +306,9 @@ export default function(){
         }
 
     }
-    const [value,setValue] = useState()
     return <div>
         {status}
-        {checkBarcode()}
+        {checkBarcode()}<br/>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
                 label="Basic example"
