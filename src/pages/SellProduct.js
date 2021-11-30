@@ -3,9 +3,11 @@ import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import {API_ADD_PRODUCT,API_ADD_SALES,API_GET_ALL_CUSTOMER, API_GET_CATEGORIES, API_GET_PRODUCT, API_UPDATE_PRODUCT} from "../settings/ApiSettings";
-
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import TextField from '@mui/material/TextField';
+import DatePicker from '@mui/lab/DatePicker';
 import axios from "axios";
-
 export default function(){
 
     const [cart,setCart] = useState([]);
@@ -241,7 +243,7 @@ export default function(){
     function isVeresiye(){
 
     }
-
+ 
     function fastSaling(){
         if(product != null && barcode != null){
             //customer type
@@ -303,10 +305,20 @@ export default function(){
         }
 
     }
-
+    const [value,setValue] = useState()
     return <div>
         {status}
         {checkBarcode()}
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+                label="Basic example"
+                value={value}
+                onChange={(newValue) => {
+                setValue(newValue);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+            />
+        </LocalizationProvider>
         <div>
             <label htmlFor="">Ürün barkodu</label>
             <input type="number" value={barcode} onChange={(e) => {setBarcode(e.target.value)}}  />
