@@ -1,13 +1,11 @@
 import { useState } from "react"
-import * as Yup from "yup";
-import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
-import {API_ADD_PRODUCT,API_ADD_SALES,API_GET_ALL_CUSTOMER, API_GET_CATEGORIES, API_GET_PRODUCT, API_UPDATE_PRODUCT} from "../settings/ApiSettings";
+import { API_ADD_SALES,API_GET_ALL_CUSTOMER, API_GET_PRODUCT } from "../settings/ApiSettings";
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TextField from '@mui/material/TextField';
 import DatePicker from '@mui/lab/DatePicker';
 import axios from "axios";
+import Loading from "./Loading";
 export default function(){
 
     const [cart,setCart] = useState([]);
@@ -27,7 +25,7 @@ export default function(){
     const [quantity,setQuantity] = useState(1);
     const [product,setProduct] = useState();
     const [value,setValue] = useState()
-
+    const [sellDescription,setSellDescription] = useState();
     const [loading,setLoading] = useState(true);
 
     if (loading == true){
@@ -39,7 +37,7 @@ export default function(){
     }
 
     if(loading == true){
-        return <p>Lütfen Bekleyiniz</p>
+        return <Loading/>
     }
 
     
@@ -309,16 +307,6 @@ export default function(){
     return <div>
         {status}
         {checkBarcode()}<br/>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-                label="Basic example"
-                value={value}
-                onChange={(newValue) => {
-                setValue(newValue);
-                }}
-                renderInput={(params) => <TextField {...params} />}
-            />
-        </LocalizationProvider>
         <div>
             <label htmlFor="">Ürün barkodu</label>
             <input type="number" value={barcode} onChange={(e) => {setBarcode(e.target.value)}}  />
@@ -342,6 +330,10 @@ export default function(){
                 <label htmlFor="">Özel Müşteri</label>
             </span>
             {checkCustomerOrOrderType()}
+        </div>
+        <div>
+            <label htmlFor="">Satış açıklaması (isteğe bağlı)</label>
+            <input type="text" value={sellDescription} onChange={(e) => {setSellDescription(e.target.value)}}/>
         </div>
         <div>
             <label htmlFor="">Ürün adedi</label>

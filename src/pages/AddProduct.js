@@ -1,16 +1,13 @@
 import * as Yup from "yup";
-import  { AuthenticationRequest } from "../dto/AuthenticationRequest";
-import Store from "../redux/Store";
-import { loadUser, loginUser } from "../redux/actions/AuthActions";
-import {useEffect, useState} from "react";
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import { Link } from "react-router-dom";
+import { useState } from "react";
 import {AddProductRequest} from "../dto/AddProductRequest";
 import axios from "axios";
-import {API_ADD_PRODUCT, API_GET_CATEGORIES, API_GET_PRODUCT, API_UPDATE_PRODUCT} from "../settings/ApiSettings";
-import {useForm} from "react-hook-form";
+import { API_ADD_PRODUCT, API_GET_CATEGORIES, API_GET_PRODUCT, API_UPDATE_PRODUCT } from "../settings/ApiSettings";
+import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import {Navigate,useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+
 export default function (){
 
 

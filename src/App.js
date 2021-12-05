@@ -1,7 +1,7 @@
-import {BrowserRouter, Routes, Route, Router} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import Store from "./redux/Store";
 import { loadUser } from "./redux/actions/AuthActions";
 import { useSelector } from "react-redux";
@@ -12,8 +12,8 @@ import AddStockProduct from "./pages/AddStockProduct";
 import StockOfProduct from "./pages/StockOfProduct";
 import DellProduct from "./pages/DellProduct";
 import SellProduct from "./pages/SellProduct";
-import ReactLoading from 'react-loading';
 import Loading from "./pages/Loading";
+import AddCustomer from "./pages/AddCustomer";
 
 export default function App() {
 
@@ -55,6 +55,7 @@ export default function App() {
                 <Route exact path="/stock-of-product" element={<StockOfProduct/>}/>
                 <Route exact path="/dell-product" element={<DellProduct/>}/>
                 <Route exact path="/sell-product" element={<SellProduct/>}/>
+                <Route exact path="/add-customer" element={<AddCustomer/>}/>
 
             </>
         }

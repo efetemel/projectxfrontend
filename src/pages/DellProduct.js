@@ -1,13 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-import * as Yup from "yup";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useParams, useNavigate } from "react-router-dom";
+
 import {
-  API_ADD_PRODUCT,
   API_DELL_PRODUCT,
-  API_GET_CATEGORIES,
   API_GET_PRODUCT,
 } from "../settings/ApiSettings";
 
