@@ -33,16 +33,19 @@ export const loadUser = () => {
     }
 }
 
-export const loginUser = (authRequest) => {
+export const loginUser = (authRequest,setStatus) => {
     return (dispatch) => {
         dispatch({type:LOGIN_LOADING});
+        setStatus(null)
         axios.post(API_LOGIN,authRequest)
             .then((res) => {
                 console.log("Giriş işlemi başarılı!")
+                setStatus(true)
                 return dispatch({ type: LOGIN_SUCCESS, payload: res.data })
             })
             .catch((err) => {
                 console.log("Giriş işlemi başarısız!")
+                setStatus(false)
                 return dispatch({ type: LOGIN_FAIL, payload: err })
             })
     }

@@ -1,0 +1,159 @@
+*{
+    font-family: 'Inter',sans-serif;
+
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+html{
+    background-color:white;
+    font-family: 'Inter',sans-serif;
+    color:black;
+    overflow:hidden;
+    overflow-y: hidden;
+}
+body{
+    margin:0;
+}
+.login-container{
+    border: 1px transparent solid;
+    margin-left:auto;
+    margin-right: auto;
+
+    width:100%;
+    height:95vh;
+
+}
+.con{
+
+    margin-left:auto;
+    margin-right: auto;
+    display:flex;
+    align-items: center;
+    justify-items: center;
+    flex-direction: column;
+    width:100%;
+    height:65vh;
+    margin-top:25vh;
+}
+.error{
+    padding: 5px;
+    background-color: tomato;
+    color: black;
+}
+
+.con img{
+    margin-left:auto;
+    margin-right:auto;
+    width:25vh;
+    align-items: center;
+    height:9vh;
+
+}
+.login-container{
+    margin-left:auto;
+    margin-right:auto;
+}
+form{
+    margin-top:5vh;
+    margin-left:auto;
+    margin-right:auto;
+}
+input{
+    align-items: center;
+    justify-items: center;
+    font-family: "Inter",sans-serif;
+}
+input[type="email"] {
+    border-top-left-radius: 0.8vh;
+    border-top-right-radius: 0.8vh;
+    width:50vh;
+    height:6vh;
+    font-weight: 500;
+    font-size:2vh;
+    border: 0.2vh solid gray;
+    border-bottom:1px gray solid;
+}
+input[type="password"] {
+    border-bottom-left-radius: 0.8vh;
+    border-bottom-right-radius: 0.8vh;
+    width:50vh;
+    height:6vh;
+    font-weight: 500;
+    font-size:2vh;
+    border: 0.2vh solid gray;
+    border-top:1px transparent solid;
+
+}
+.login-btn{
+    margin-top:2vh;
+    width: 51vh;
+    height:6vh;
+    font-size:2vh;
+    border-bottom-left-radius: 0.8vh;
+    border-bottom-right-radius: 0.8vh;
+    color:white;
+    font-weight: 600;
+    transition: .3s;
+    background-color: dodgerblue;
+    border:transparent 1px solid;
+}
+
+.login-loading{
+    margin-top:2vh;
+    width: 51vh;
+    height:6vh;
+    font-size:2vh;
+    border-bottom-left-radius: 0.8vh;
+    border-bottom-right-radius: 0.8vh;
+    color:white;
+    font-weight: 600;
+    transition: .3s;
+    background-color: red;
+    border:transparent 1px solid;
+}
+.login-loading:hover{
+    background-color: darkred;
+}
+.login-btn:hover{
+    cursor:pointer;
+
+    background-color: rgb(18, 75, 133);
+
+    transition: .3s;
+}
+.con a{
+
+    text-decoration: none;
+    color: dodgerblue;
+    margin-top:2vh;
+    float:left;
+    font-size:2.4vh;
+}
+.con a:hover{
+    cursor: pointer;
+}
+.splash #loading{
+
+
+
+    overflow-y: hidden;
+    overflow-x: hidden;
+    left:46%;
+    right:46%;
+    top:40vh;
+    bottom:40%;
+    width:100px;
+    height:100px;
+    background-color:  white;
+    border-radius: 100px;
+    border-left:4px dodgerblue solid;
+    position: absolute;
+}
+.splash{
+    position: absolute;
+    margin:0;
+    width:100%;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    height:100%;
+    background-color:  white;
+}

@@ -44,7 +44,7 @@ export default function (state = initialState,action){
         case LOGIN_FAIL:
             return {
                 ...state,
-                isLoginLoading: true
+                isLoginLoading: false
             }
         default:
             return state;

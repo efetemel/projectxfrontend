@@ -1,5 +1,7 @@
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import ReactLoading from 'react-loading';
+import Loading from "./Loading";
 
 export default function (){
 
@@ -7,8 +9,11 @@ export default function (){
     const { nowVault,inCome,expense,received} = useSelector(state => state.vault);
 
     if (user == null){
-        return <p>Lütfen bekleyiniz</p>
+        return <Loading/>
     }
+
+
+
 
     return(
         <div>

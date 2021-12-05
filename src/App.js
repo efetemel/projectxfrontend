@@ -12,6 +12,8 @@ import AddStockProduct from "./pages/AddStockProduct";
 import StockOfProduct from "./pages/StockOfProduct";
 import DellProduct from "./pages/DellProduct";
 import SellProduct from "./pages/SellProduct";
+import ReactLoading from 'react-loading';
+import Loading from "./pages/Loading";
 
 export default function App() {
 
@@ -25,13 +27,18 @@ export default function App() {
         setLoad(false)
     }
 
+
     if (loading == false && loading2 == true && user != null){
+
         Store.dispatch(getExpense());
         Store.dispatch(getInCome());
         Store.dispatch(getReceived());
         Store.dispatch(getNowVault());
         setLoad2(false)
     }
+
+
+
 
 
     function routes(){
@@ -51,8 +58,8 @@ export default function App() {
 
             </>
         }
-        else {
-            return <Route path="*" element={<Login/>}/>
+        else{
+            return <Route path="*" element={<Loading/>}/>
         }
     }
 
