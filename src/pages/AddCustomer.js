@@ -2,6 +2,8 @@ import { useState } from "react";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
+import axios from "axios";
+import {API_GET_CATEGORIES} from "../settings/ApiSettings";
 
 export default function (){
     const [status,setStatus] = useState();
@@ -22,6 +24,10 @@ export default function (){
 
     function HandleAddCustomer(value){
 
+        axios.get(API_GET_CATEGORIES)
+            .then((res) => {
+
+            })
     }
 
     return <div>
@@ -43,10 +49,12 @@ export default function (){
                 <label>{errors.phoneNumber?.message}</label>
             </div>
             <div>
-                <label htmlFor="">Müşteri Adresi</label>
+                <label htmlFor="">Müşteri Adresi</label><br/>
                 <textarea type="text"   {...register("address")} />
                 <label>{errors.address?.message}</label>
             </div>
+            <button>Müşteri ekle</button><br/>
+            <button type="reset">Temizle</button>
         </form>
     </div>
 }
